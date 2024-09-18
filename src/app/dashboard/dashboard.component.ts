@@ -10,6 +10,8 @@ import { Students } from '../models/students';
 import { FormBuilder, FormGroup, ReactiveFormsModule,Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { DialogComponent } from '../component/dialog/dialog.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -25,7 +27,8 @@ import { MatInputModule } from '@angular/material/input';
     MatCardModule,
     ReactiveFormsModule,
     CommonModule,
-    MatInputModule
+    MatInputModule,
+    MatDialogModule
   ]
 })
 export class DashboardComponent implements OnInit {
@@ -33,6 +36,7 @@ export class DashboardComponent implements OnInit {
   myForm!: FormGroup;
 
   studentsArray: Students[] = []
+  constructor(private fb: FormBuilder, private dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.myForm = this.fb.group({
@@ -47,10 +51,6 @@ export class DashboardComponent implements OnInit {
   }
 
   private breakpointObserver = inject(BreakpointObserver);
-  imprime: string ="subtitulo";
-  miEstado: boolean = false;
-
-  constructor(private fb: FormBuilder) {}
 
   onSubmit(): void {
     if (this.myForm.valid) {
@@ -60,6 +60,9 @@ export class DashboardComponent implements OnInit {
         email: this.myForm.value.email
       };
       this.studentsArray.push(newStudent);
+      this.dialog.open(DialogComponent, {
+        data: newStudent
+      });
       this.myForm.reset();
     }
   }
